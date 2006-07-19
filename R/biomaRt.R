@@ -204,8 +204,8 @@ mapFilter <- function(type){
     stop("invalid type choose either affy, refseq, embl, hugo, ensembl, ensemblTrans, unigene, agilentprobe or entrezgene");
   }
   mapf = switch(type,
-    ensembl =  "gene_stable_id",
-    ensemblTrans = "transcript_stable_id",
+    ensembl =  "ensembl_gene_id",
+    ensemblTrans = "ensembl_transcript_id",
     entrezgene = "entrezgene",
     hugo = "hgnc_symbol",
     refseq = "refseq_dna",
@@ -327,6 +327,28 @@ getGene <- function( id, type, array, mart){
       geneid="ensembl_gene_id"
       transid="ensembl_transcript_id"
       strand = "strand"
+      symbol = switch(mart@dataset,
+                      hsapiens_gene_ensembl = "hgnc_symbol",
+                      mmusculus_gene_ensembl = "mgi_symbol",
+                      rnorvegicus_gene_ensembl = "mgi_symbol",
+                      scerevisiae_gene_ensembl = "sgd",
+                      celegans_gene_ensembl = "external_gene_id",
+                      cintestinalis_gene_ensembl = "external_gene_id",
+                      ptroglodytes_gene_ensembl = "external_gene_id",
+                      frubripes_gene_ensembl = "external_gene_id",
+                      agambiae_gene_ensembl = "external_gene_id",
+                      ggallus_gene_ensembl = "external_gene_id",
+                      xtropicalis_gene_ensembl = "external_gene_id",
+                      drerio_gene_ensembl = "external_gene_id",
+                      tnigroviridis_gene_ensembl = "external_gene_id",
+                      mmulatta_gene_ensembl = "external_gene_id",
+                      mdomesticus_gene_ensembl = "external_gene_id",
+                      amellifera_gene_ensembl = "external_gene_id",
+                      dmelanogaster_gene_ensembl = "external_gene_id",
+                      btaurus_gene_ensembl = "external_gene_id",
+                      cfamiliaris_gene_ensembl = "external_gene_id",
+                      )
+
     }
     if(!missing(array)){
       if(array=="affy_hg_u133a_2"){
@@ -335,27 +357,15 @@ getGene <- function( id, type, array, mart){
       else{
         attrib = array
       }
-      table = getBM(attributes=c(attrib,"hgnc_symbol","description",chrname,"band",strand,startpos,endpos,geneid,transid),filters = array, values = id, mart=mart)
+      table = getBM(attributes=c(attrib,symbol,"description",chrname,"band",strand,startpos,endpos,geneid,transid),filters = array, values = id, mart=mart)
     }
     else{
       if(missing(type))stop("Specify the type of identifier you are using, see ?getGene for details")
       filter = mapFilter(type)
-      att=NULL
-      if(filter == "gene_stable_id"){
-        att = geneid
-      }
-      else{
-        if(filter == "transcript_stable_id"){
-          att = transid
-        }
-        else{
-          att = filter    
-        }
-      }
-      table = getBM(attributes=c(att,"hgnc_symbol","description",chrname,"band",strand,startpos, endpos, geneid,transid),filters = filter, values = id, mart=mart)
+      table = getBM(attributes=c(filter,symbol,"description",chrname,"band",strand,startpos, endpos, geneid,transid),filters = filter, values = id, mart=mart)
     }
     if(!is.null(table)){
-      colnames(table)=c("ID","HUGO symbol", "description", "chromosome","band","strand","chromosome_start","chromosome_end","ensembl_gene_id","ensembl_transcript_id")
+      colnames(table)=c("ID","symbol", "description", "chromosome","band","strand","chromosome_start","chromosome_end","ensembl_gene_id","ensembl_transcript_id")
     }
     return(table)
   }
@@ -479,18 +489,6 @@ getFeature <- function( symbol, OMIM, OMIMID, GO, GOID, array, chromosome, start
     filter=NULL
     attribute=NULL
     values = NULL
-    
-    if(is.na(match("ensembl_gene_id",listAttributes(mart)))){
-      chrname="chr_name"
-      startpos = "chrom_start"
-      endpos = "chrom_end"
-      geneid="gene_stable_id"
-      transid="transcript_stable_id"
-      strand = "chrom_strand"
-      attribute = switch(type, hugo="hgnc_symbol",agilentcgh = "agilentcgh",agilentprobe="agilentprobe", entrezgene = "entrezgene", locuslink = "entrezgene", embl = "embl", refseq ="refseq_dna", unigene="unigene", affy = array, ensembl="gene_stable_id")
-    
-    }
-    else{
       startpos = "start_position"
       endpos = "end_position"
       chrname="chromosome_name"
@@ -499,12 +497,9 @@ getFeature <- function( symbol, OMIM, OMIMID, GO, GOID, array, chromosome, start
       strand = "strand"
       attribute = switch(type, hugo="hgnc_symbol",agilentcgh = "agilent_cgh",agilentprobe="agilent_probe", entrezgene = "entrezgene", locuslink = "entrezgene", embl = "embl", refseq ="refseq_dna", unigene="unigene", affy = array, ensembl="ensembl_gene_id")
     
-    }
-    
-    
     if(!missing(symbol)){
-      filter="hgnc_symbol"
-      attribute = c("hgnc_symbol",attribute)
+      symbol = switch(mart@dataset, hsapiens_gene_ensembl = "hgnc_symbol", mmusculus_gene_ensembl = "mgi_symbol",  rnorvegicus_gene_ensembl = "mgi_symbol", scerevisiae_gene_ensembl = "sgd", celegans_gene_ensembl = "external_gene_id", cintestinalis_gene_ensembl = "external_gene_id", ptroglodytes_gene_ensembl = "external_gene_id", frubripes_gene_ensembl = "external_gene_id", agambiae_gene_ensembl = "external_gene_id", ggallus_gene_ensembl = "external_gene_id", xtropicalis_gene_ensembl = "external_gene_id", drerio_gene_ensembl = "external_gene_id",tnigroviridis_gene_ensembl = "external_gene_id", mmulatta_gene_ensembl = "external_gene_id", mdomesticus_gene_ensembl = "external_gene_id",amellifera_gene_ensembl = "external_gene_id", dmelanogaster_gene_ensembl = "external_gene_id",btaurus_gene_ensembl = "external_gene_id",cfamiliaris_gene_ensembl = "external_gene_id")
+      attribute = c(filter,attribute)
       values = symbol
     }
     
@@ -525,13 +520,13 @@ getFeature <- function( symbol, OMIM, OMIMID, GO, GOID, array, chromosome, start
     
     if(!missing(chromosome)){
       if(missing(start) && missing(end)){
-        filter = "chr_name"
+        filter = "chromosome_name"
         attribute = c(transid,chrname,attribute)
         values = chromosome
       }
       else{
-        filter=c("chr_name","gene_chrom_start","gene_chrom_end")
-        attribute = c(transid,chrname,startpos,endpos,attribute)
+        filter=c("chromosome_name","start","end")
+        attribute = c(transid,chrname,"start_position","end_position",attribute)
         values = list(chromosome, start, end)
         
       }
@@ -618,16 +613,9 @@ getGO <- function( id, type, array, mart){
   }
 #--webservice----------------------
   else{
-    if(is.na(match("ensembl_gene_id",listAttributes(mart)))){
-      goid="go_id"
-      geneid="gene_stable_id"
-      transid="transcript_stable_id"
-    }
-    else{
       goid="go"
       geneid="ensembl_gene_id"
       transid="ensembl_transcript_id"
-    }
    
     if(!missing(array)){
       if(array=="affy_hg_u133a_2"){
@@ -642,29 +630,14 @@ getGO <- function( id, type, array, mart){
     else{
       if(missing(type))stop("Specify the type of identifier you are using, see ?getGene for details")
       filter = mapFilter(type)
-      if(filter == "gene_stable_id" || filter == "transcript_stable_id"){
-        if(filter == "gene_stable_id"){
-          table = getBM(attributes=c(geneid,goid, "go_description","evidence_code",geneid,transid),filters = filter, values = id, mart=mart)
-        }
-        else{
-          table = getBM(attributes=c(transid,goid, "go_description","evidence_code",geneid,transid),filters = filter, values = id, mart=mart)
-        }
-      }
-      else{
-        table = getBM(attributes=c(filter,goid, "go_description", geneid,transid),filters = filter, values = id, mart=mart)
-      }
+      table = getBM(attributes=c(filter,goid, "go_description", geneid,transid),filters = filter, values = id, mart=mart)
     }
     if(!is.null(table)){
       if(!missing(array)){
         colnames(table)=c("ID","go_id", "go_description", "evidence_code","ensembl_gene_id","ensembl_transcript_id")
       }
       else{
-        if(filter == "gene_stable_id" || filter == "transcript_stable_id"){
-          colnames(table)=c("ID","go_id", "go_description", "evidence_code","ensembl_gene_id","ensembl_transcript_id")
-        }
-        else{
           colnames(table)=c("ID","go_id", "go_description","ensembl_gene_id","ensembl_transcript_id")
-        }
       }
     }
     return(table)

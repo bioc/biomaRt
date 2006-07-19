@@ -134,10 +134,6 @@ go
 
 OMIM annotation can be retrieved with the function \Rfunction{getOMIM}.  The arguments are the same as the function \Rfunction{getGene}.
 
-<<>>=
-omim <- getOMIM( id = "203140_at" , array = "affy_hg_u133_plus_2", mart = mart)
-omim
-@
 
 \subsubsection{INTERPRO protein domains}
 

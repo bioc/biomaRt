@@ -15,19 +15,20 @@
 
 \examples{
 if(interactive()){
-mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
+writeLines("this function is temporary unavailable")
+#mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
 
 #example using affy id
 
-omim = getOMIM( id = "1939_at", array = "affy_hg_u95av2", mart = mart)
-show(omim)
+#omim = getOMIM( id = "1939_at", array = "affy_hg_u95av2", mart = mart)
+#show(omim)
 
 #example using locuslink id
 
-omim = getOMIM( id = 672, type = "entrezgene", mart = mart)
-show(omim)
+#omim = getOMIM( id = 672, type = "entrezgene", mart = mart)
+#show(omim)
 
-martDisconnect(mart = mart)
+#martDisconnect(mart = mart)
 }
 }
 \keyword{methods}

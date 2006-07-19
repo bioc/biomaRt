@@ -32,13 +32,11 @@ homolog = getHomolog( id = "ENSG00000072778", from.mart = from.mart, from.type =
 show(homolog)
 
 #Affy to Affy
-
-homolog = getHomolog( id = "1424184_at", to.array = "affy_hg_u95av2", from.array = "affy_mouse430a_2", from.mart = from.mart, to.mart=to.mart )
+homolog = getHomolog( id = "1939_at", to.array = "affy_mouse430_2", from.array = "affy_hg_u95av2", from.mart = from.mart, to.mart=to.mart )
 show(homolog)
 
-#Affy to ensembl
-
-homolog = getHomolog( id = "1424184_at", to.type = "ensembl", from.array = "affy_mouse430a_2", from.mart = from.mart, to.mart = to.mart )
+#Ensembl to affy
+homolog = getHomolog( id = "ENSG00000072778", to.array = "affy_mouse430_2", from.type = "ensembl", from.mart = from.mart, to.mart = to.mart )
 show(homolog)
 
 }
