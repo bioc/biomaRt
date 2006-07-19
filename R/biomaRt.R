@@ -489,8 +489,8 @@ getFeature <- function( symbol, OMIM, OMIMID, GO, GOID, array, chromosome, start
     filter=NULL
     attribute=NULL
     values = NULL
-      startpos = "start_position"
-      endpos = "end_position"
+      startpos = "start"
+      endpos = "end"
       chrname="chromosome_name"
       geneid="ensembl_gene_id"
       transid="ensembl_transcript_id"
@@ -498,7 +498,26 @@ getFeature <- function( symbol, OMIM, OMIMID, GO, GOID, array, chromosome, start
       attribute = switch(type, hugo="hgnc_symbol",agilentcgh = "agilent_cgh",agilentprobe="agilent_probe", entrezgene = "entrezgene", locuslink = "entrezgene", embl = "embl", refseq ="refseq_dna", unigene="unigene", affy = array, ensembl="ensembl_gene_id")
     
     if(!missing(symbol)){
-      symbol = switch(mart@dataset, hsapiens_gene_ensembl = "hgnc_symbol", mmusculus_gene_ensembl = "mgi_symbol",  rnorvegicus_gene_ensembl = "mgi_symbol", scerevisiae_gene_ensembl = "sgd", celegans_gene_ensembl = "external_gene_id", cintestinalis_gene_ensembl = "external_gene_id", ptroglodytes_gene_ensembl = "external_gene_id", frubripes_gene_ensembl = "external_gene_id", agambiae_gene_ensembl = "external_gene_id", ggallus_gene_ensembl = "external_gene_id", xtropicalis_gene_ensembl = "external_gene_id", drerio_gene_ensembl = "external_gene_id",tnigroviridis_gene_ensembl = "external_gene_id", mmulatta_gene_ensembl = "external_gene_id", mdomesticus_gene_ensembl = "external_gene_id",amellifera_gene_ensembl = "external_gene_id", dmelanogaster_gene_ensembl = "external_gene_id",btaurus_gene_ensembl = "external_gene_id",cfamiliaris_gene_ensembl = "external_gene_id")
+      filter = switch(mart@dataset,
+                      hsapiens_gene_ensembl = "hgnc_symbol", 
+                      mmusculus_gene_ensembl = "mgi_symbol",
+                      rnorvegicus_gene_ensembl = "mgi_symbol",
+                      scerevisiae_gene_ensembl = "sgd",
+                      celegans_gene_ensembl = "external_gene_id",
+                      cintestinalis_gene_ensembl = "external_gene_id",
+                      ptroglodytes_gene_ensembl = "external_gene_id",
+                      frubripes_gene_ensembl = "external_gene_id",
+                      agambiae_gene_ensembl = "external_gene_id",
+                      ggallus_gene_ensembl = "external_gene_id",
+                      xtropicalis_gene_ensembl = "external_gene_id",
+                      drerio_gene_ensembl = "external_gene_id",
+                      tnigroviridis_gene_ensembl = "external_gene_id",
+                      mmulatta_gene_ensembl = "external_gene_id",
+                      mdomesticus_gene_ensembl = "external_gene_id",
+                      amellifera_gene_ensembl = "external_gene_id", 
+                      dmelanogaster_gene_ensembl = "external_gene_id",
+                      btaurus_gene_ensembl = "external_gene_id",
+                      cfamiliaris_gene_ensembl = "external_gene_id")
       attribute = c(filter,attribute)
       values = symbol
     }
@@ -525,7 +544,7 @@ getFeature <- function( symbol, OMIM, OMIMID, GO, GOID, array, chromosome, start
         values = chromosome
       }
       else{
-        filter=c("chromosome_name","start","end")
+        filter=c(chrname,startpos,endpos)
         attribute = c(transid,chrname,"start_position","end_position",attribute)
         values = list(chromosome, start, end)
         
@@ -982,17 +1001,9 @@ getSNP <- function(chromosome, start, end, mart){
     return( table );
   }
   else{
-    if(is.na(match("tsc",listAttributes(mart)))){
       tscid="tscid"
-      snpstart="snp_chrom_start"
-      snpend="snp_chrom_end"
-    }
-    else{
-      tscid="tsc"
       snpstart="chrom_start"
       snpend="chrom_end"
-    }
-   
     attributes = c(tscid,"refsnp_id","allele","chrom_start","chrom_strand")
     table = getBM(attributes = attributes,filters = c("chr_name",snpstart,snpend), values = list(chromosome, start, end), mart=mart)    
     return(table)
