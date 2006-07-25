@@ -7,13 +7,15 @@ setClass("Mart",
                         mainTables = "list",
                         biomart = "character",
                         host = "character",
+                         vschema = "character",
                         dataset = "character",
                         filters = "environment",
                         attributes = "environment"
                         ),
          prototype(mysql = FALSE,
                    connections = new("list"),
-                   dataset = ""
+                   dataset = "",
+                   vschema="default"
                    )
          );
 
@@ -119,14 +121,16 @@ listMarts <- function( mart, host, user, password, includeHosts = FALSE, mysql =
     marts = list(biomart = NULL, version = NULL, host = NULL, path = NULL)
     index = 1
     
-    for(i in 1:xmlSize(registry)){
+    for(i in 1:xmlSize(registry)){       
       if(xmlName(registry[[i]])=="virtualSchema"){
+           vschema = xmlGetAttr(registry[[i]],"name")
         for(j in 1:xmlSize(registry[[i]])){
           if(xmlGetAttr(registry[[i]][[j]],"visible") == 1){
             marts$biomart[index] = xmlGetAttr(registry[[i]][[j]],"name")
             marts$version[index] = xmlGetAttr(registry[[i]][[j]],"displayName")
             marts$host[index] = xmlGetAttr(registry[[i]][[j]],"host")
             marts$path[index] = xmlGetAttr(registry[[i]][[j]],"path")
+            marts$vschema[index] = vschema
             index=index+1
           }
         }
@@ -311,16 +315,6 @@ getGene <- function( id, type, array, mart){
 
 #Webservice-----------------------------------------------------
   else{
-
-    if(is.na(match("ensembl_gene_id",listAttributes(mart)))){
-      chrname="chr_name"
-      startpos = "chrom_start"
-      endpos = "chrom_end"
-      geneid="gene_stable_id"
-      transid="transcript_stable_id"
-      strand = "chrom_strand"
-    }
-    else{
       startpos = "start_position"
       endpos = "end_position"
       chrname="chromosome_name"
@@ -349,7 +343,6 @@ getGene <- function( id, type, array, mart){
                       cfamiliaris_gene_ensembl = "external_gene_id",
                       )
 
-    }
     if(!missing(array)){
       if(array=="affy_hg_u133a_2"){
         attrib = "affy_hg_u133a_v2"
@@ -912,7 +905,7 @@ getSequence <- function(chromosome, start, end, id, type, seqType, mart){
     species = strsplit(mart@dataset,"_")[[1]][1]
     if(!missing(chromosome)){
       if(seqType %in% c("cdna","peptide","3utr","5utr")){
-        query = paste("<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE Query><Query  virtualSchemaName = 'default' count = '0' ><Dataset name = '",species,"_gene_ensembl'><ValueFilter name = 'chr_name' value = '",chromosome,"'/><ValueFilter name = 'gene_chrom_start' value = '",start,"'/><ValueFilter name = 'gene_chrom_end' value = '",end,"'/></Dataset><Links source = '",species,"_gene_ensembl' target = '",species,"_gene_ensembl_structure' defaultLink = '",species,"_internal_transcript_id' /><Dataset name = '",species,"_gene_ensembl_structure'><Attribute name = '",geneid,"'/><Attribute name = 'str_chrom_name'/><Attribute name = 'biotype'/></Dataset><Links source = '",species,"_gene_ensembl_structure' target = '",species,"_genomic_sequence' defaultLink = '",seqType,"' /><Dataset name = '",species,"_genomic_sequence'><Attribute name = '",seqType,"'/></Dataset></Query>",sep="")
+        query = paste("<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE Query><Query  virtualSchemaName = 'default' count = '0' ><Dataset name = '",species,"_gene_ensembl'><ValueFilter name = 'chromosome_name' value = '",chromosome,"'/><ValueFilter name = 'start' value = '",start,"'/><ValueFilter name = 'end' value = '",end,"'/></Dataset><Links source = '",species,"_gene_ensembl' target = '",species,"_gene_ensembl_structure' defaultLink = '",species,"_internal_transcript_id' /><Dataset name = '",species,"_gene_ensembl_structure'><Attribute name = '",geneid,"'/><Attribute name = 'str_chrom_name'/><Attribute name = 'biotype'/></Dataset><Links source = '",species,"_gene_ensembl_structure' target = '",species,"_genomic_sequence' defaultLink = '",seqType,"' /><Dataset name = '",species,"_genomic_sequence'><Attribute name = '",seqType,"'/></Dataset></Query>",sep="")
       }
       else{
         stop("The type of sequence specified with seqType is not available. Please select from: cdna, peptide, 3utr, 5utr")
@@ -1198,7 +1191,7 @@ getHomolog <- function(id, from.type, to.type, from.array, to.array, from.mart, 
     xmlQuery = paste("<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE Query><Query  virtualSchemaName = 'default' count = '0'> <Dataset name = '",from.mart@dataset,"'>",sep="")
     attributeXML =""#  paste("<Attribute name = '", from.attributes, "'/>", collapse="", sep="")
     valuesString = paste(id,"",collapse=",",sep="")
-    filterXML = paste("<ValueFilter name = '",filter,"' value = '",valuesString,"' />", sep="")
+    filterXML = paste("<Filter name = '",filter,"' value = '",valuesString,"' />", sep="")
     xmlQuery = paste(xmlQuery, attributeXML, filterXML,"</Dataset><Dataset name = '",to.mart@dataset,"'>",sep="")
     to.attributeXML =  paste("<Attribute name = '", to.attributes, "'/>", collapse="", sep="") 
     xmlQuery = paste(xmlQuery, to.attributeXML,"</Dataset>",sep="")
@@ -1426,17 +1419,9 @@ getINTERPRO <- function( id, type, array, mart){
 #--webservice--------------------------------
   
   else{
-    if(is.na(match("ensembl_gene_id",listAttributes(mart)))){
-      interproid="interpro_id"
-      geneid="gene_stable_id"
-      transid="transcript_stable_id"
-    }
-    else{
       interproid="interpro"
       geneid="ensembl_gene_id"
       transid="ensembl_transcript_id"
-    }
-   
     
     if(!missing(array)){
       if(array=="affy_hg_u133a_2"){
@@ -1451,17 +1436,7 @@ getINTERPRO <- function( id, type, array, mart){
     else{
       if(missing(type))stop("Specify the type of identifier you are using, see ?getGene for details")
       filter = mapFilter(type)
-      if(filter == "gene_stable_id"){
-        table = getBM(attributes=c(geneid,interproid, "interpro_description",geneid,transid),filters = filter, values = id, mart=mart)
-      }
-      else{
-        if(filter=="transcript_stable_id"){
-          table = getBM(attributes=c(transid,interproid, "interpro_description",geneid,transid),filters = filter, values = id, mart=mart)
-        }
-        else{
-          table = getBM(attributes=c(filter,interproid, "interpro_description",geneid,transid),filters = filter, values = id, mart=mart)
-    }
-    }
+      table = getBM(attributes=c(filter,interproid, "interpro_description",geneid,transid),filters = filter, values = id, mart=mart)
     }
     if(!is.null(table)){
       colnames(table)=c("ID","interpro_id", "description", "ensembl_gene_id","ensembl_transcript_id")
@@ -1537,7 +1512,7 @@ useMart <- function(biomart, dataset, host, user, password, local = FALSE, mysql
 
     if(marts$path[mindex]=="")marts$path[mindex]="/biomart/martservice" #temporary to catch bugs in registry
     
-    mart <- new("Mart", biomart = biomart, host = paste("http://",marts$host[mindex],marts$path[mindex],sep=""), mysql= FALSE)
+    mart <- new("Mart", biomart = biomart,vschema=marts$vschema[mindex] ,host = paste("http://",marts$host[mindex],marts$path[mindex],sep=""), mysql= FALSE)
     if(!missing(dataset)){
       mart = useDataset(mart = mart, dataset=dataset)
     }
@@ -1750,7 +1725,7 @@ useDataset <- function(dataset, mart){
   }
   else{
 
-    config = getURL(paste(mart@host,"?type=configuration&dataset=",dataset, sep=""))
+    config = getURL(paste(mart@host,"?type=configuration&dataset=",dataset,"&virtualschema=",mart@vschema, sep=""))
     config = xmlTreeParse(config)
     config = config$doc$children[[1]]
 
