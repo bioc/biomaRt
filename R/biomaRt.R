@@ -141,6 +141,12 @@ listMarts <- function( mart, host, user, password, includeHosts = FALSE, mysql =
           marts$version[index] = xmlGetAttr(registry[[i]],"displayName")
           marts$host[index] = xmlGetAttr(registry[[i]],"host")
           marts$path[index] = xmlGetAttr(registry[[i]],"path")
+          if(!is.null(xmlGetAttr(registry[[i]],"serverVirtualSchema"))){
+           marts$vschema[index] =  xmlGetAttr(registry[[i]],"serverVirtualSchema")
+          }
+          else{
+           marts$vschema[index] = vschema
+          }
           index=index+1
         }
       }
@@ -1801,6 +1807,7 @@ getBM <- function(attributes, filters, values, mart, curl = NULL, output = "data
       
       if(postRes != ""){
         ## convert the serialized table into a dataframe
+        if(postRes != "\n"){
         con = textConnection(postRes)
         result = read.table(con, sep="\t", header=FALSE, quote = "", comment.char = "", as.is=TRUE)
         close(con)
@@ -1808,12 +1815,16 @@ getBM <- function(attributes, filters, values, mart, curl = NULL, output = "data
           stop(paste("\n",result,"The following query was attempted, use this to report this error\n",xmlQuery ,sep="\n"))
         }
         ## check and postprocess
-        if(all(is.na(result[,ncol(result)])))
-          result = result[,-ncol(result),drop=FALSE]
+        #if(all(is.na(result[,ncol(result)])))
+        #  result = result[,-ncol(result),drop=FALSE]
         stopifnot(ncol(result)==length(attributes))
         if(class(result) == "data.frame"){
           colnames(result) = attributes
         }
+       }
+       else{
+        result = NA
+       } 
       } else {
         #stop("The getBM query to BioMart webservice returned no result.  The webservice could be temporarily down, please try query again.")
         ##
@@ -1822,6 +1833,7 @@ getBM <- function(attributes, filters, values, mart, curl = NULL, output = "data
         result=NULL
       }
       return(result)
+     
     }
     else{
       out <- vector("list", length(attributes))
@@ -1833,7 +1845,9 @@ getBM <- function(attributes, filters, values, mart, curl = NULL, output = "data
       for(j in seq(along = attributes)){
         tmp2 <- vector("list", length(values))
         names(tmp2) <- values
+        
         for(k in seq(along = tmp2)){
+  
        #   tst <- getBM(attributes = attributes[j], filters=filters, values = values[k], mart = mart, curl = curl)
           tst <- getBM(attributes = attributes[j], filters=filters, values = values[k], mart = mart)
        
