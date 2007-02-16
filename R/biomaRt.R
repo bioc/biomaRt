@@ -43,7 +43,7 @@ setMethod("show","martTable",
 #######################
 
 
-listMarts <- function( mart, host, user, password, includeHosts = FALSE, mysql = FALSE){
+listMarts <- function( mart, host, user, password, port, includeHosts = FALSE, mysql = FALSE){
   
   if(mysql){
     
@@ -54,16 +54,17 @@ listMarts <- function( mart, host, user, password, includeHosts = FALSE, mysql =
       mart <- c("ensembl","vega","snp","msd","uniprot","sequence","wormbase")
     }
     if(missing(host)){
-      host <- c("ensembldb.ensembl.org", "martdb.ebi.ac.uk")
+      host <- c("martdb.ensembl.org", "martdb.ebi.ac.uk")
       user <- c("anonymous","anonymous")
       password <- c("","")
+      port = c(3316,3306)
     }
     
     database <- NULL
     driv <- dbDriver("MySQL", force.reload = FALSE);
     
     for(i in 1:length(host)){
-      connection <- dbConnect(driv, user = user[i], host = host[i], password = password[i]);
+      connection <- dbConnect(driv, user = user[i], host = host[i], password = password[i], port = port[i]);
   
       res <- dbGetQuery(connection,"show databases like '%mart%'"); 
                                         #Search latest releases of marts
@@ -1361,7 +1362,7 @@ getINTERPRO <- function( id, type, array, mart){
 #
 ######################################################################################
 
-useMart <- function(biomart, dataset, host, user, password, local = FALSE, mysql = FALSE){
+useMart <- function(biomart, dataset, host, user, password, port, local = FALSE, mysql = FALSE){
 
   if(mysql){
     
@@ -1374,9 +1375,9 @@ useMart <- function(biomart, dataset, host, user, password, local = FALSE, mysql
       stop("'biomart' should be a single character string.")
 
     if(local){
-      if(!missing(host) && !missing(user) && !missing(password)){
-        database <- listMarts(mart = biomart, host = host, user = user, password = password);
-        mart@connections[["biomart"]] <- dbConnect(drv = mart@mysqldriver$driver,user = user, host = host, dbname = database, password = password)
+      if(!missing(host) && !missing(user) && !missing(password) && !missing(port)){
+        database <- listMarts(mart = biomart, host = host, user = user, password = password, port = port);
+        mart@connections[["biomart"]] <- dbConnect(drv = mart@mysqldriver$driver,user = user, host = host, dbname = database, password = password, port = port)
         writeLines(paste("connected to: ",database[1,1]))
       }
       else{
@@ -1401,7 +1402,7 @@ useMart <- function(biomart, dataset, host, user, password, local = FALSE, mysql
       }
 
       if(!martdb %in% marts) stop("Requested BioMart database is not available please use the function listMarts(mysql=TRUE) to see the valid biomart names you can query using mysql access")
-      mart@connections[["biomart"]] <- dbConnect(drv = mart@mysqldriver$driver,user = "anonymous", host = "ensembldb.ensembl.org" , dbname = martdb, password = "")
+      mart@connections[["biomart"]] <- dbConnect(drv = mart@mysqldriver$driver,user = "anonymous", host = "martdb.ensembl.org" , dbname = martdb, password = "", port = 3316)
       writeLines(paste("connected to: ",biomart))
     }
     if(!missing(dataset)){
