@@ -370,7 +370,7 @@ To show us a smaller list of attributes which belog to a specified group or cate
 
 \begin{small}
 <<>>=
-listAttributes(ensembl, category  = "Features", group = "REGION:")
+listAttributes(ensembl, category  = "Features", group = "GENE:")
 @
 \end{small}
 
