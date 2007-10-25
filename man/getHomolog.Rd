@@ -6,8 +6,8 @@
 
 \arguments{
   \item{id}{gene identifier}
-  \item{from.type}{type of identifier of the input. Possible values depend on the selected species and can be obtained by the listFilters function and using the from.mart.  Examples for hsapiens are: entrezgene, hgnc\_symbol (for hugo gene symbol), ensembl\_gene\_id, unigene, agilentprobe, affy\_hg\_u133\_plus\_2,  refseq\_dna, etc.}
-  \item{to.type}{type of identifier that needs to be retrieved from as homolog id. Possible values depend on the selected species and can be obtained by the listAttributes function and using the to.mart.  Examples for hsapiens are entrezgene, hgnc\_symbol (for hugo gene symbol), ensembl\_gene\_id, unigene, agilentprobe, affy\_hg\_u133\_plus\_2,  refseq\_dna, etc. }
+  \item{from.type}{type of identifier of the input. Possible values depend on the selected species and can be obtained by the listFilters function and using the from.mart.  Examples for hsapiens are: entrezgene, hgnc (for hugo gene symbol), ensembl\_gene\_id, unigene, agilentprobe, affy\_hg\_u133\_plus\_2,  refseq\_dna, etc.}
+  \item{to.type}{type of identifier that needs to be retrieved from as homolog id. Possible values depend on the selected species and can be obtained by the listAttributes function and using the to.mart.  Examples for hsapiens are entrezgene, hgnc (for hugo gene symbol), ensembl\_gene\_id, unigene, agilentprobe, affy\_hg\_u133\_plus\_2,  refseq\_dna, etc. }
   \item{from.mart}{Mart object using dataset from species of which the query id is from.} 
   \item{to.mart}{Mart object using dataset from species you want to find the homologs off.} 
 }
