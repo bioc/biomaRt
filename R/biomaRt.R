@@ -233,9 +233,10 @@ getGene <- function( id, type, mart){
 
 getGO <- function( id, type, mart){
   martCheck(mart,"ensembl")
+  warning("This function will retire use getBM instead with attributes go_biological_process_id, go_cellular_component_id, go_biological_process_id, go_biological_process_linkage_type, go_cellular_component_linkage_type and go_molecular_function_linkage_type")
   checkWrapperArgs(id,type,mart)
   typeAttrib = switch(type,affy_hg_u133a_2 = "affy_hg_u133a_v2",type)
-  attrib = c(typeAttrib,"go","go_description","evidence_code","ensembl_gene_id")   
+  attrib = c(typeAttrib,"go","go_biological_process_id","ensembl_gene_id")   
   table = getBM(attributes = attrib,filters = type, values = id, mart=mart)
   return(table)
 }

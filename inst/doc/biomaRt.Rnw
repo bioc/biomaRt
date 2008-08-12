@@ -143,26 +143,8 @@ In this task we start out with a list of EntrezGene identiers and we want to ret
 \begin{scriptsize}
 <<>>=
 entrez=c("673","837")
-getBM(attributes=c('entrezgene','go','go_description','evidence_code'), filters='entrezgene', values=entrez, mart=ensembl)
+getBM(attributes=c('entrezgene','go_biological_process_id','go_biological_process_linkage_type'), filters='entrezgene', values=entrez, mart=ensembl)
 @ 
-\end{scriptsize}
-
-As this is a frequently used query to Ensembl, a wrapper function getGO is provided that retrieves a standard set of information based for a given list of identifiers:
-
-\begin{scriptsize}
-\begin{verbatim}
-
-> go = getGO(id="202763_at", type="affy_hg_u133_plus_2",mart=ensembl)
-> go
-  affy_hg_u133_plus_2         go                         go_description evidence_code ensembl_gene_id
-1           202763_at GO:0005515                        protein binding           IPI ENSG00000164305
-2           202763_at GO:0006508                            proteolysis           IDA ENSG00000164305
-3           202763_at GO:0006915                              apoptosis           IEA ENSG00000164305
-4           202763_at GO:0006917                 induction of apoptosis           TAS ENSG00000164305
-5           202763_at GO:0008234       cysteine-type peptidase activity           IEA ENSG00000164305
-6           202763_at GO:0030264 nuclear fragmentation during apoptosis           IMP ENSG00000164305
-7           202763_at GO:0030693                       caspase activity           TAS ENSG00000164305
-\end{verbatim}
 \end{scriptsize}
 
 \subsection{Task 3: Retrieve all HUGO gene symbols of genes that are located on chromosomes 1,2 or Y ,\\ and are associated with one the following GO terms: \\"GO:0051330","GO:0000080","GO:0000114","GO:0000082"\\ (here we'll use more than one filter)}
