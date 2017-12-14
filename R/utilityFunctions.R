@@ -76,30 +76,30 @@
 .createFilterXMLchunk <- function(filterChunk, mart) {
     
     individualFilters <- vapply(names(filterChunk), 
-        FUN = function(filter, values, mart) {
-            
-            ## if the filter exists and is boolean we do this
-            if(filter %in% listFilters(mart, what = "name") && 
-               grepl('boolean', filterType(filter = filter, mart = mart)) ) {
-                if(!is.logical(values[[filter]])) 
-                    stop("biomaRt error:\n", 
-                         filter, " is a boolean filter and needs a corresponding logical value of TRUE or FALSE to indicate if the query should retrieve all data that fulfill the boolean or alternatively that all data that not fulfill the requirement should be retrieved.")
-                val <- ifelse(values[[filter]], yes = 0, no = 1)
-                val <- paste0("' excluded = \"", val, "\" ")
-                
-            } else { 
-                ## otherwise the filter isn't boolean, or doesn't exist
-                
-                if(is.numeric(values[[filter]])) 
-                    values[[filter]] <- as.integer(values[[filter]])
-                val <- paste0(values[[filter]], collapse = ",")
-                val <- paste0("' value = '", val, "' ")
-            }
-            filterXML <- paste0("<Filter name = '", filter, val, "/>")
-            return(filterXML)
-        }, FUN.VALUE = character(1), 
-        filterChunk, mart,
-        USE.NAMES = FALSE)
+                                FUN = function(filter, values, mart) {
+                                    
+                                    ## if the filter exists and is boolean we do this
+                                    if(filter %in% listFilters(mart, what = "name") && 
+                                       grepl('boolean', filterType(filter = filter, mart = mart)) ) {
+                                        if(!is.logical(values[[filter]])) 
+                                            stop("biomaRt error:\n", 
+                                                 filter, " is a boolean filter and needs a corresponding logical value of TRUE or FALSE to indicate if the query should retrieve all data that fulfill the boolean or alternatively that all data that not fulfill the requirement should be retrieved.")
+                                        val <- ifelse(values[[filter]], yes = 0, no = 1)
+                                        val <- paste0("' excluded = \"", val, "\" ")
+                                        
+                                    } else { 
+                                        ## otherwise the filter isn't boolean, or doesn't exist
+                                        
+                                        if(is.numeric(values[[filter]])) 
+                                            values[[filter]] <- as.integer(values[[filter]])
+                                        val <- paste0(values[[filter]], collapse = ",")
+                                        val <- paste0("' value = '", val, "' ")
+                                    }
+                                    filterXML <- paste0("<Filter name = '", filter, val, "/>")
+                                    return(filterXML)
+                                }, FUN.VALUE = character(1), 
+                                filterChunk, mart,
+                                USE.NAMES = FALSE)
     
     filterXML <- paste0(individualFilters, collapse = "")
     return(filterXML)
@@ -119,7 +119,7 @@
     if(is.data.frame(values) && ncol(values == 1)) {
         values <- values[,1]
     }
-
+    
     
     if(!is.list(values)){
         values <- list(values)
@@ -133,7 +133,7 @@
 
 #' it seems like pretty common practice for users to copy and paste the host
 #' name from a browser if they're not accessing Ensembl.  Typically this will
-#' include the "http://" and maybe a trailing "/" and this messes up or
+#' include the "http://" and maybe a trailing "/" and this messes up our
 #' paste the complete URL strategy and produces something invalid.  
 #' This function tidies that up to catch common variants.
 .cleanHostURL <- function(host) {
@@ -148,3 +148,21 @@
     
     return(host)
 }
+
+#' ensembl redirection doesn't seem to be working properly as of 12-12-2017
+#' This is a wrapper function to catch POSTS that are redirected and fail
+#' The new host is captured from the header and used in a re-submission
+.submitQuery <- function(host, query) {
+    res <- httr::POST(url = host,
+                      body = list('query' = query))
+    
+    if(res$all_headers[[1]]$status == 302) {
+        host <- stringr::str_match(string = res$all_headers[[1]]$headers$location,
+                                   pattern = "//([a-zA-Z./]+)\\??;?redirectsrc")[,2]
+        res <- httr::POST(url = host,
+                          body = list('query' = query)
+        )
+    }
+    return( content(res) )
+}
+
