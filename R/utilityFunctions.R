@@ -163,6 +163,6 @@
                           body = list('query' = query)
         )
     }
-    return( content(res) )
+    return( suppressMessages(content(res)) )
 }
 
