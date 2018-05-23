@@ -229,7 +229,8 @@ useMart <- function(biomart, dataset, host = "www.ensembl.org", path = "/biomart
                 biomart = biomart,
                 vschema = marts$vschema[mindex], 
                 host = paste0(host, ":", 
-                              marts$port[mindex], marts$path[mindex]), 
+                              port, 
+                              marts$path[mindex]), 
                 archive = archive)
     
     if(length(grep("archive",martHost(mart)) > 0)){
