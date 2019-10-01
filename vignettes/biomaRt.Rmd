@@ -278,7 +278,7 @@ getSequence(id = entrez,
 
 ## Retrieve all 5' UTR sequences of all genes that are located on chromosome 3 between the positions 185,514,033 and 185,535,839
 
-As described in the provious task getSequence can also use chromosomal coordinates to retrieve sequences of all genes that lie in the given region. We also have to specify which type of identifier we want to retrieve together with the sequences, here we choose for entrezgene identifiers.
+As described in the previous task `getSequence()` can also use chromosomal coordinates to retrieve sequences of all genes that lie in the given region. We also have to specify which type of identifier we want to retrieve together with the sequences; here we choose to return the EntrezGene identifiers.
 
 ```{r task8, echo=TRUE,eval=TRUE}
 utr5 = getSequence(chromosome=3, start=185514033, end=185535839,
@@ -342,33 +342,6 @@ getLDS(attributes = c("hgnc_symbol","chromosome_name", "start_position"),
 # Using archived versions of Ensembl
 
 It is possible to query archived versions of Ensembl through `r Biocpkg("biomaRt")`.
-
-<!-- 
-######################################
-I dont think the archive=TRUE version works anymore.  The registry of archives is out-of-date
-and none of them are live now.  Identifying the host is far more reliable
-Mike Smith - 20/10/2016
-######################################
-
-There are currently two ways to access archived versions.
-
-## Using `archive = TRUE` 
-First we list the available Ensembl archives by using the `listMarts()` function and setting the archive attribute to TRUE.
-Note that not all archives are available this way and it seems that recently this only gives access to few archives if you don't see the version of the archive you need please look at the 2nd way to access archives.
-```{r archiveMarts1}
-listMarts(archive = TRUE)
-``` 
-Next we select the archive we want to use using the `useMart()` function, again setting the archive attribute to TRUE and giving the full name of the BioMart e.g. ensembl_mart_46.
-
-```{r archiveMarts2, echo = TRUE, eval = TRUE}
-ensembl = useMart("ensembl_mart_46", dataset="hsapiens_gene_ensembl", archive = TRUE)
-``` 
-
-If you don't know the dataset you want to use could first connect to the BioMart using `useMart()` and then use the `listDatasets()` function on this object.
-After you selected the BioMart database and dataset, queries can be performed in the same way as when using the current BioMart versions.
-
-## Accessing archives through specifying the archive host
--->
 
 `r Biocpkg("biomaRt")` provides the function `listEnsemblArchives()` to view the available archives.  This function takes no arguments, and produces a table containing the names of the available archived versions, the date they were first available, and the URL where they can be accessed.
 

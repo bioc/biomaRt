@@ -25,7 +25,7 @@ show(g)
 
 #example using Entrez Gene id
 
-g = getGene( id = "100", type = "entrezgene", mart = mart)
+g = getGene( id = "100", type = "entrezgene_id", mart = mart)
 show(g)
 }
 }
