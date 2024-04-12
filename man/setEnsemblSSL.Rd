@@ -25,7 +25,7 @@ as found in \code{\link[curl]{curl_options}}.}
 \dontrun{
   ssl_settings <- list("ssl_cipher_list" = "DEFAULT@SECLEVEL=1",
                        "ssl_verifypeer"  = FALSE)
-  setEnsemblSSL
+  setEnsemblSSL(ssl_settings)
 }
 }
 

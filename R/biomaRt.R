@@ -473,9 +473,15 @@ filterType <- function(filter, mart){
 #getBM: generic BioMart query function   # 
 ##########################################
 
-getBM <- function(attributes, filters = "", values = "", mart, curl = NULL, 
+getBM <- function(attributes, filters = "", values = "", mart, curl, 
                   checkFilters = TRUE, verbose=FALSE, uniqueRows=TRUE, bmHeader=FALSE, quote="\"",
                   useCache = TRUE){
+  
+    if(!missing(curl)) {
+      message("The 'curl' argument is no longer used and will be deprecated in ", 
+              "the next Bioconductor release.\n",
+              "You should remove it from your call to 'getBM()'")
+    }
     
     ## check the arguments are all valid
     martCheck(mart)
