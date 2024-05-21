@@ -44,4 +44,3 @@ Collate: biomaRtClasses.R
          ensembl_ssl_settings.R
          utilityFunctions.R
          non-biomart-utils.R
-         

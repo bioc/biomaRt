@@ -7,8 +7,8 @@ createNameToAliasMap <- function() {
 
   req <- httr2::request(url) |>
     httr2::req_headers("Accept" = "application/json")
-  json <- req_perform(req) |>
-    resp_body_json()
+  json <- httr2::req_perform(req) |>
+    httr2::resp_body_json()
   
   names <- vapply(json$species, FUN = \(x) { x$name }, FUN.VALUE = character(1))
   
@@ -87,3 +87,55 @@ getCurrentEnsemblRelease <- function() {
   return(version)
 }
 
+## list files in Ensembl FTP TSV directory
+## this is used to identify if there is an ensembl<->entrez mapping file
+listFilesInEnsemblFTP <- function(species, release, dir) {
+  
+  loadNamespace("curl")
+  
+  ftp_dir <- sprintf("ftp://ftp.ensembl.org/pub/release-%s/%s/%s/", release, dir, species)
+  
+  list_files <- curl::new_handle()
+  curl::handle_setopt(list_files, ftp_use_epsv = TRUE, dirlistonly = TRUE)
+  con <- curl::curl(url = ftp_dir, open = "r", handle = list_files)
+  files <- readLines(con)
+  close(con)
+  
+  return(files)
+  
+}
+
+## helper to make sure that we *have* entrez gene IDs to map to at ensembl!
+.ensemblMapsToEntrezId <- function(species, release=NULL) {
+    files <- listFilesInEnsemblFTP(species = species, release = release, dir = 'tsv')
+    res <- any(grepl('entrez.tsv.gz$', files))
+    return(res)
+}
+
+
+getHomologs <- function(ensembl_gene_ids, species_from, species_to) {
+  
+  from <- biomaRt:::findGenomeName(species_from)
+  to <- biomaRt:::findGenomeName(species_to)
+  
+  dataset_from <- paste0(
+    stringr::str_sub(from, 1, 1),
+    stringr::str_extract(from, pattern = "_(.*)$", group = 1),
+    "_gene_ensembl"
+  )
+  
+  homolog_attribute <- paste0(
+    stringr::str_sub(to, 1, 1),
+    stringr::str_extract(to, pattern = "_(.*)$", group = 1),
+    "_homolog_ensembl_gene"
+  )
+  
+  mart <- useEnsembl(biomart = "genes",
+                     dataset = dataset_from)
+  
+  q1 <- getBM(attributes=c("ensembl_gene_id", homolog_attribute),
+              mart = mart,
+              values = ensembl_gene_ids, 
+              filters= "ensembl_gene_id")
+  q1
+}

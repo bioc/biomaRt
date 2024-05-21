@@ -36,3 +36,5 @@ exportClasses(Mart)
 
 exportMethods("show")
 
+export(getHomologs)
+
