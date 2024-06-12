@@ -4,7 +4,9 @@
     req_options(!!!config)
   useast <- request("https://useast.ensembl.org/index.html?redirect=no") |>
     req_timeout(5) |>
-    req_options(!!!config)
+    req_options(!!!config) |>
+    ## hopefully temporary work around for 403 error on this mirror
+    req_user_agent("Mozilla/5.0 (X11; Linux i686; rv:127.0) Gecko/20100101 Firefox/127.0")
   
   main |> req_perform()
   useast |> req_perform()
