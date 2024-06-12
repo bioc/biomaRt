@@ -42,8 +42,9 @@ pickReferenceStrain <- function(genomes_to_choose_from) {
   
   idx2 <- which(strains == "reference")
   
-  message("Your search term was ambigous and multiple strains matching this term were found\n",
-          "Selecting the reference geneome for this organism.")
+  message("Your search term was ambigous and multiple strains matching this term were found.\n",
+          "Selecting the reference genome for this organism.\n",
+          "Use a more specific search term if this is inappropriate.")
   
   return(names[idx][idx2])
 }
@@ -115,8 +116,8 @@ listFilesInEnsemblFTP <- function(species, release, dir) {
 
 getHomologs <- function(ensembl_gene_ids, species_from, species_to) {
   
-  from <- biomaRt:::findGenomeName(species_from)
-  to <- biomaRt:::findGenomeName(species_to)
+  from <- findGenomeName(species_from)
+  to <- findGenomeName(species_to)
   
   dataset_from <- paste0(
     stringr::str_sub(from, 1, 1),

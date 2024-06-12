@@ -1,5 +1,5 @@
 Package: biomaRt
-Version: 2.61.0
+Version: 2.61.1
 Title: Interface to BioMart databases (i.e. Ensembl)
 License: Artistic-2.0
 Description: In recent years a wealth of biological data has become available
@@ -25,7 +25,7 @@ Authors@R: c(person("Steffen", "Durinck", role = c("aut"),
             comment = c(ORCID = "0000-0002-7800-3848")))
 Depends: methods
 Imports: utils, AnnotationDbi, progress, stringr, httr2,
-        digest, BiocFileCache, rappdirs, xml2
+        digest, BiocFileCache, rappdirs, xml2, curl
 Suggests: BiocStyle, knitr, mockery, rmarkdown, testthat, httptest2
 URL: https://github.com/grimbough/biomaRt
 BugReports: https://github.com/grimbough/biomaRt/issues
