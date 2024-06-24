@@ -156,7 +156,7 @@ test_that("we can search predefined filter values", {
 })
 
 
-test_that("defunct functions show warnings", {
+test_that("defunct functions show errors", {
     
     expect_error(searchFilterValues(ensembl, filter = "chromosome_name"))
     expect_error(listFilterValues(ensembl, filter = "chromosome_name"))

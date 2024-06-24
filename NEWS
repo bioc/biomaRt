@@ -9,6 +9,7 @@ BUG FIXES
 
   o Results returned from BioMart queries will be read using Latin-1 encounding
   if the default fails. Reported in https://support.bioconductor.org/p/9158844/
+  (Backported to 2.60.1)
   
 CHANGES IN VERSION 2.60.0
 -------------------------
