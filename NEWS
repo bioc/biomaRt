@@ -1,3 +1,15 @@
+CHANGES IN VERSION 2.62.0
+-------------------------
+
+USER VISIBLE CHANGES
+
+  o Several deprecated functions are now defunct.
+  
+BUG FIXES
+
+  o Results returned from BioMart queries will be read using Latin-1 encounding
+  if the default fails. Reported in https://support.bioconductor.org/p/9158844/
+  
 CHANGES IN VERSION 2.60.0
 -------------------------
 
