@@ -384,10 +384,8 @@ searchFilterOptions <- function(mart, filter, pattern) {
 }
 
 searchFilterValues <- function(mart, filter, pattern) {
-  .Deprecated(new = "listFilterOptions",
-              msg = c("This function has been renamed searchFilterOptions()",
-                      "\nsearchFilterValues() is deprecated and will be removed in the future."))
-  searchFilterOptions(mart, filter, pattern = pattern)
+  .Defunct(new = "listFilterOptions",
+           msg = c("This function has been renamed searchFilterOptions()"))
 }
 
 
@@ -396,8 +394,6 @@ listFilterOptions <- function(mart, filter) {
 }
 
 listFilterValues <- function(mart, filter) {
-  .Deprecated(new = "listFilterOptions",
-              msg = c("This function has been renamed listFilterOptions()",
-                      "\nlistFilterValues() is deprecated and will be removed in the future."))
-  listFilterOptions(mart, filter)
+  .Defunct(new = "listFilterOptions",
+              msg = c("This function has been renamed listFilterOptions()"))
 }

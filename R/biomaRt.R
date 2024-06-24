@@ -448,10 +448,9 @@ listFilters <- function(mart, what = c("name", "description")) {
 
 ## filterOptions
 filterOptions <- function(filter, mart){
-    .Deprecated(new = "listFilterOptions",
-                msg = c("filterOptions() has been deprecated and will be removed from biomaRt.",
-                "\nPlease use listFilterOptions() instead."))
-    listFilterOptions(mart = mart, filter = filter)
+    .Defunct(new = "listFilterOptions",
+             msg = c("filterOptions() has been made defunct and will be removed from biomaRt.",
+                     "\nPlease use listFilterOptions() instead."))
 }
 
 ## filterType
@@ -473,16 +472,10 @@ filterType <- function(filter, mart){
 #getBM: generic BioMart query function   # 
 ##########################################
 
-getBM <- function(attributes, filters = "", values = "", mart, curl, 
+getBM <- function(attributes, filters = "", values = "", mart, 
                   checkFilters = TRUE, verbose=FALSE, uniqueRows=TRUE, bmHeader=FALSE, quote="\"",
                   useCache = TRUE){
   
-    if(!missing(curl)) {
-      message("The 'curl' argument is no longer used and will be deprecated in ", 
-              "the next Bioconductor release.\n",
-              "You should remove it from your call to 'getBM()'")
-    }
-    
     ## check the arguments are all valid
     martCheck(mart)
     if(missing( attributes ))
@@ -706,20 +699,6 @@ getLDS <- function(attributes, filters = "", values = "", mart,
     }
     return(result)
 } 
-
-######################
-#getBMlist
-######################
-
-getBMlist <- function(attributes, filters = "", values = "", mart, list.names = NULL, 
-                      na.value = NA, verbose=FALSE, giveWarning=TRUE){
-    .Defunct(new = "getBM",
-             msg = c("getBMlist() has been removed from biomaRt",
-                     "\nPlease use getBM() instead")
-    )
-}
-
-
 
 ####################
 #export FASTA      #

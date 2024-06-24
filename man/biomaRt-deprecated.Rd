@@ -4,15 +4,14 @@
 \alias{listFilterValues}
 \alias{searchFilterValues}
 \alias{getBMlist}
-\title{Deprecated functions in package \sQuote{biomaRt}}
+\title{Deprecated and defunct functions in package \sQuote{biomaRt}}
 \description{
-  These functions are provided for compatibility with older versions
-  of \sQuote{biomaRt} only, and will be defunct at the next release.
+  These functions have been removed from biomaRt and replaced with alternatives.
 }
 
 \details{
 
-  The following functions are deprecated and will be made defunct; use
+  The following functions are defunct and no longer work; use
   the replacement indicated below:
   \itemize{
 
@@ -21,10 +20,5 @@
     \item{searchFilterValues: \code{\link{searchFilterOptions}}}
 
   }
-  
-  The following functions are defunct and no longer work; use
-  the replacement indicated below:
-  \itemize{
-      \item{getBMlist: \code{\link{getBM}}}
-  }
+
 }

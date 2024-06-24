@@ -17,7 +17,7 @@ importFrom(xml2, read_html, xml_find_first, xml_find_all, xml_text)
 export(listMarts, getGene, getSequence, exportFASTA, useMart, listDatasets, 
        useDataset,  listAttributes, listFilters, 
        getBM, getLDS, attributePages, filterOptions,filterType, 
-       getBMlist, NP2009code, keys, columns, keytypes, select,
+       NP2009code, keys, columns, keytypes, select,
        searchAttributes, searchDatasets, searchFilters)
        
 export(biomartCacheClear, biomartCacheInfo)

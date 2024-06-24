@@ -156,10 +156,10 @@ test_that("we can search predefined filter values", {
 })
 
 
-test_that("deprecated functions show warnings", {
+test_that("defunct functions show warnings", {
     
-    expect_warning(searchFilterValues(ensembl, filter = "chromosome_name"))
-    expect_warning(listFilterValues(ensembl, filter = "chromosome_name"))
+    expect_error(searchFilterValues(ensembl, filter = "chromosome_name"))
+    expect_error(listFilterValues(ensembl, filter = "chromosome_name"))
 })
 
 test_that("attribute and filter tables are parsed correctly", {

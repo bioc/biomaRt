@@ -39,13 +39,6 @@ test_that("getBM() gives appropriate error messages", {
 })
 
 
-test_that("getBMlist removal message is shown", {
-    expect_error(getBMlist(),
-                 class = "defunctError")
-})
-
-
-
 test_that("getBM returns sensible things", {
     
     skip_if_not_installed('mockery')
