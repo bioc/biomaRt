@@ -134,7 +134,7 @@ listMarts <- function( mart = NULL, host="https://www.ensembl.org", path="/bioma
     
     ## create a table with the registry information
     marts <- do.call('rbind', lapply(registry_xml2, FUN = xml2::xml_attrs))
-    marts <- as.data.frame( marts[marts[,"visible"] == "1",] )
+    marts <- as.data.frame( marts[marts[,"visible"] == "1", , drop = FALSE] )
     ## rename some columns
     names(marts)[names(marts) == "name"] <- "biomart"
     names(marts)[names(marts) == "displayName"] <- "version"
