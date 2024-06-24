@@ -49,9 +49,9 @@ bmRequest <- function(request, http_config, verbose = FALSE){
     result <- req_perform(request)
     
     result2 <- resp_body_string(result)
-    # if(is.na(result2)) {
-    #     result2 <- content(result, encoding = "Latin1")
-    # }
+    if(is.na(result2)) {
+         result2 <- resp_body_string(result, encoding = "Latin1")
+    }
     return(result2)
 }
 
