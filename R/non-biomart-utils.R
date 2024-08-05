@@ -41,12 +41,20 @@ pickReferenceStrain <- function(genomes_to_choose_from) {
                     FUN.VALUE = character(1))
   
   idx2 <- which(strains == "reference")
+  if(length(idx2) == 0)
+    idx2 <- which(grepl(pattern = "reference", x = strains))
   
-  message("Your search term was ambigous and multiple strains matching this term were found.\n",
-          "Selecting the reference genome for this organism.\n",
-          "Use a more specific search term if this is inappropriate.")
+  if(length(idx2) != 1) {
+    stop("unable to determine reference strain")
+  }
   
   return(names[idx][idx2])
+}
+
+pickReferenceStrain_msg <- function(input_term) {
+  message("Your search term was ambigous and multiple strains matching '", input_term, "' were found.\n",
+          "Selecting the reference genome for this organism.\n",
+          "Use a more specific search term if this is inappropriate.")
 }
 
 ## Given an input string, try to identify the genome name for the organism
@@ -66,6 +74,7 @@ findGenomeName <- function(input) {
       res <- names(aliases)[which(search)]
     } else if (any(search) && (sum(search) > 1)) {
       res <- pickReferenceStrain(genomes_to_choose_from = names(aliases)[which(search)])
+      pickReferenceStrain_msg(input)
     } else {
       stop('Unable to match the search term to a genome')
     }
