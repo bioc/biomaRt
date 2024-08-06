@@ -122,6 +122,13 @@ listFilesInEnsemblFTP <- function(species, release, dir) {
     return(res)
 }
 
+.shrinkDatasetName <- function(input) {
+
+  parts <- stringr::str_split_fixed(input, pattern = "_", n = Inf)[1,]
+  short <- paste(stringr::str_sub(head(parts, -1), 1, 1), collapse = "")
+  final <- paste0(short, tail(parts, 1))
+  return(final)
+}
 
 getHomologs <- function(ensembl_gene_ids, species_from, species_to) {
   
@@ -129,14 +136,12 @@ getHomologs <- function(ensembl_gene_ids, species_from, species_to) {
   to <- findGenomeName(species_to)
   
   dataset_from <- paste0(
-    stringr::str_sub(from, 1, 1),
-    stringr::str_extract(from, pattern = "_(.*)$", group = 1),
+    .shrinkDatasetName(from),
     "_gene_ensembl"
   )
   
   homolog_attribute <- paste0(
-    stringr::str_sub(to, 1, 1),
-    stringr::str_extract(to, pattern = "_(.*)$", group = 1),
+    .shrinkDatasetName(to),
     "_homolog_ensembl_gene"
   )
   
