@@ -13,6 +13,8 @@ BioMart software suite.
 
 For bug reports, please register an [issue](https://github.com/grimbough/biomaRt/issues) here on Github. For usage queries please post a question on the [Bioconductor Support Forum](https://support.bioconductor.org/p/new/post/?tag_val=biomaRt).
 
+This is an approved de.NBI service. Please help us improve by taking [our short user survey](https://www.surveymonkey.de/r/denbi-service?sc=hd-hub&tool=biomaRt).
+
 ## Funding
 
 Funding for continued development and maintenance of this package is provided by the German Network for Bioinformatics Infrastructure
