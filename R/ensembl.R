@@ -77,7 +77,7 @@
 #' @keywords methods
 #'
 #' @examples
-#' listEnsemblArchives()
+#' listEnsemblArchives(fetch = FALSE)
 #'
 #' @export
 listEnsemblArchives <- function() {
