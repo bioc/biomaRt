@@ -18,7 +18,7 @@ with the dates they were created and the URL used to access them.}
 Lists the available archived versions of Ensembl
 }
 \examples{
-listEnsemblArchives()
+listEnsemblArchives(fetch = FALSE)
 
 }
 \author{
