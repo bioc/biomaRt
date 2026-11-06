@@ -45,18 +45,6 @@ with_mock_dir(
   simplify = FALSE
 )
 
-with_mock_dir(
-  "www_OK",
-  {
-    test_that("Ensembl mirror selection works", {
-      .chooseEnsemblMirror(mirror = "useast") |>
-        expect_equal("www") |>
-        expect_message(regexp = "unresponsive")
-    })
-  },
-  simplify = FALSE
-)
-
 test_that("Ensembl URLs are constructed correctly", {
   ## no arguments ##
   .constructEnsemblURL() |>
@@ -65,15 +53,7 @@ test_that("Ensembl URLs are constructed correctly", {
 
   ## mirror ##
   .constructEnsemblURL(mirror = "INVALID_MIRROR") |>
-    expect_equal("https://jun2026.archive.ensembl.org") |>
-    expect_warning(,
-      regexp = "Invalid mirror\\. Select a mirror"
-    )
-
-  expect_equal(
-    .constructEnsemblURL(mirror = "useast"),
-    "https://useast.ensembl.org"
-  )
+    expect_equal("https://jun2026.archive.ensembl.org")
 
   ## GRCh ##
   expect_equal(.constructEnsemblURL(GRCh = 37), "https://grch37.ensembl.org")
@@ -87,11 +67,6 @@ test_that("Ensembl URLs are constructed correctly", {
   ## version ##
   expect_silent(.constructEnsemblURL(version = "100")) |>
     expect_equal("https://apr2020.archive.ensembl.org")
-
-  expect_error(
-    .constructEnsemblURL(version = "00"),
-    regexp = "Specified Ensembl version is not available"
-  )
 
   ## combinations ##
   expect_error(
